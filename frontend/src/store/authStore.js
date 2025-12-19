@@ -87,12 +87,14 @@ export const useAuthStore = create((set) => ({
 		try {
 			const response = await axios.post(`${API_URL}/reset-password/${token}`, { password });
 			set({ message: response.data.message, isLoading: false });
+			return response.data;
 		} catch (error) {
+			const errorMessage = error.response?.data?.message || "Error resetting password";
 			set({
 				isLoading: false,
-				error: error.response.data.message || "Error resetting password",
+				error: errorMessage,
 			});
-			throw error;
+			throw new Error(errorMessage);
 		}
 	},
 }));
